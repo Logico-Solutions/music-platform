@@ -8,12 +8,6 @@ VALUES ('Sub-admin-1', 2, CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'syste
 INSERT INTO role (name, role_id, created_at, created_by, updated_at, updated_by)
 VALUES ('Sub-admin-2', 3, CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system');
 
-INSERT INTO role (name, role_id, created_at, created_by, updated_at, updated_by)
-VALUES ('Sub-admin-3', 4, CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system');
-
-INSERT INTO role (name, role_id, created_at, created_by, updated_at, updated_by)
-VALUES ('Sub-admin-4', 5, CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system');
-
 -- Mapping Roles to Privileges
 INSERT INTO privilege_assignment (role_id, privilege_id, type, assigned_at)
 VALUES (1, 1, 'Allowed', CURRENT_TIMESTAMP);

@@ -3,6 +3,7 @@ package org.logico.exhandler;
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.security.AuthenticationFailedException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.UriInfo;
 import lombok.extern.jbosslog.JBossLog;
@@ -29,4 +30,10 @@ public class RestExceptionHandler extends GenericExceptionHandler {
         return buildRestResponse(Status.UNAUTHORIZED, ex, uriInfo);
     }
 
+    @ServerExceptionMapper
+    public RestResponse<ApiError> mapConstraintViolationException(ConstraintViolationException ex, UriInfo uriInfo) {
+        log.error("Validation error occurred", ex);
+        return this.buildRestResponse(Status.BAD_REQUEST, this.errorBuilder(Status.BAD_REQUEST,
+                ex.getMessage(), uriInfo).build());
+    }
 }
