@@ -21,6 +21,7 @@ import org.logico.mapper.RoleMapper;
 import org.logico.repository.RoleRepository;
 import org.logico.util.Constants;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Tag(name = "Role Management REST Endpoints")
@@ -47,6 +48,7 @@ public class RoleManagementResource {
                 .list()
                 .stream()
                 .map(roleMapper::toDto)
+                .sorted(Comparator.comparing(RoleResponseDto::getName))
                 .toList();
 
         return Response
