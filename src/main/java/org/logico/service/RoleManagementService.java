@@ -21,20 +21,25 @@ public class RoleManagementService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
-    public List<Role> getRolesSortedAndPaginated(int pageIndex, int pageSize, RoleSortBy sortBy) {
-        return roleRepository
-                .findAll()
-                .page(pageIndex, pageSize)
-                .stream()
-                .sorted(getRoleComparator(sortBy))
-                .toList();
-    }
-
     public List<RoleResponseDto> mapRolesToDto(List<Role> roles) {
         return roles
                 .stream()
                 .map(roleMapper::toDto)
                 .toList();
+    }
+
+    public List<Role> sortRoles(List<Role> roles, RoleSortBy sortBy) {
+        return roles
+                .stream()
+                .sorted(getRoleComparator(sortBy))
+                .toList();
+    }
+
+    public List<Role> getRoles(int pageIndex, int pageSize) {
+        return roleRepository
+                .findAll()
+                .page(pageIndex, pageSize)
+                .list();
     }
 
     public Comparator<Role> getRoleComparator(RoleSortBy sortBy) {
