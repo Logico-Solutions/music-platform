@@ -1,6 +1,7 @@
 package org.logico.resource;
 
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -20,6 +21,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapper;
 import org.logico.repository.RoleRepository;
+import org.logico.service.AuthenticationService;
+import org.logico.service.RoleManagementService;
 import org.logico.util.Constants;
 
 import java.util.Comparator;
@@ -33,6 +36,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class RoleManagementResource {
 
+    RoleManagementService roleManagementService;
     RoleMapper roleMapper;
     RoleRepository roleRepository;
 
@@ -47,13 +51,13 @@ public class RoleManagementResource {
             @APIResponse(responseCode = "403", description = "Not authorized to view")})
     public Response getRoles(@QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("10") int pageSize) {
-        List<RoleResponseDto> roles = roleRepository
-                .findAll()
-                .page(pageIndex, pageSize)
-                .list()
+        //TODO: check privilege to view
+        //TODO: different sorting
+        //TODO: unit test
+        List<RoleResponseDto> roles = roleManagementService
+                .getSortedRoles(pageIndex, pageSize)
                 .stream()
                 .map(roleMapper::toDto)
-                .sorted(Comparator.comparing(RoleResponseDto::getName))
                 .toList();
 
         return Response
