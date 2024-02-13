@@ -20,6 +20,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapper;
+import org.logico.model.Role;
 import org.logico.repository.RoleRepository;
 import org.logico.service.AuthenticationService;
 import org.logico.service.RoleManagementService;
@@ -54,14 +55,11 @@ public class RoleManagementResource {
         //TODO: check privilege to view
         //TODO: different sorting
         //TODO: unit test
-        List<RoleResponseDto> roles = roleManagementService
-                .getSortedRoles(pageIndex, pageSize)
-                .stream()
-                .map(roleMapper::toDto)
-                .toList();
+        List<Role> sortedRoles = roleManagementService.getSortedRoles(pageIndex, pageSize);
+        List<RoleResponseDto> dtoList = roleManagementService.mapRolesToDto(sortedRoles);
 
         return Response
-                .ok(roles)
+                .ok(dtoList)
                 .build();
     }
 }

@@ -28,4 +28,10 @@ public class RoleManagementService {
                 .toList();
     }
 
+    public List<RoleResponseDto> mapRolesToDto(List<Role> roles) {
+        return roles
+                .stream()
+                .map(roleMapper::toDto)
+                .toList();
+    }
 }
