@@ -1,7 +1,6 @@
 package org.logico.resource;
 
 import io.quarkus.security.Authenticated;
-import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -22,11 +21,10 @@ import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapper;
 import org.logico.model.Role;
 import org.logico.repository.RoleRepository;
-import org.logico.service.AuthenticationService;
 import org.logico.service.RoleManagementService;
 import org.logico.util.Constants;
+import org.logico.util.RoleSortBy;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Tag(name = "Role Management REST Endpoints")
@@ -49,13 +47,15 @@ public class RoleManagementResource {
                     @Content(mediaType = MediaType.APPLICATION_JSON,
                             schema = @Schema(implementation = RoleResponseDto.class))}),
             @APIResponse(responseCode = "401", description = "Unauthorized"),
-            @APIResponse(responseCode = "403", description = "Not authorized to view")})
+            @APIResponse(responseCode = "403", description = "Not privileged to view")})
     public Response getRoles(@QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("10") int pageSize) {
+            @QueryParam("size") @DefaultValue("10") int pageSize,
+            @QueryParam("sort-by") @DefaultValue("name") String sortBy) {
         //TODO: check privilege to view
-        //TODO: different sorting
         //TODO: unit test
-        List<Role> sortedRoles = roleManagementService.getSortedRoles(pageIndex, pageSize);
+
+        List<Role> sortedRoles = roleManagementService
+                .getRolesSortedAndPaginated(pageIndex, pageSize, RoleSortBy.fromString(sortBy));
         List<RoleResponseDto> dtoList = roleManagementService.mapRolesToDto(sortedRoles);
 
         return Response
