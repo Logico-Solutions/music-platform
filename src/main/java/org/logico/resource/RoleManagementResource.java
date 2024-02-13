@@ -17,7 +17,11 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.logico.dto.response.RoleResponseDto;
+import org.logico.mapper.RoleMapper;
+import org.logico.repository.RoleRepository;
 import org.logico.util.Constants;
+
+import java.util.List;
 
 @Tag(name = "Role Management REST Endpoints")
 @Path("/api/v1/roles")
@@ -27,14 +31,26 @@ import org.logico.util.Constants;
 @Produces(MediaType.APPLICATION_JSON)
 public class RoleManagementResource {
 
+    RoleMapper roleMapper;
+    RoleRepository roleRepository;
+
     @GET
     @PermitAll
     @Operation(summary = "Getting list of Roles with pagination and sorting")
     @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
             @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RoleResponseDto.class))})
-    public Response getRoles(@QueryParam("page") @DefaultValue("0") int page) {
+    public Response getRoles(@QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("10") int pageSize) {
+        List<RoleResponseDto> roles = roleRepository
+                .findAll()
+                .page(pageIndex, pageSize)
+                .list()
+                .stream()
+                .map(roleMapper::toDto)
+                .toList();
+
         return Response
-                .ok("Roles retrieved successfully")
+                .ok(roles)
                 .build();
     }
 }
