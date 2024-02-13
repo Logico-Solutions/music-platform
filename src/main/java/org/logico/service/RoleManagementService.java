@@ -28,18 +28,18 @@ public class RoleManagementService {
                 .toList();
     }
 
-    public List<Role> sortRoles(List<Role> roles, RoleSortBy sortBy) {
-        return roles
-                .stream()
-                .sorted(getRoleComparator(sortBy))
-                .toList();
-    }
-
     public List<Role> getRoles(int pageIndex, int pageSize) {
         return roleRepository
                 .findAll()
                 .page(pageIndex, pageSize)
                 .list();
+    }
+
+    public List<Role> sortRoles(List<Role> roles, RoleSortBy sortBy) {
+        return roles
+                .stream()
+                .sorted(getRoleComparator(sortBy))
+                .toList();
     }
 
     public Comparator<Role> getRoleComparator(RoleSortBy sortBy) {
