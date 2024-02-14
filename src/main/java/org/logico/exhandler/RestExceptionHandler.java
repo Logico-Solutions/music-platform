@@ -29,4 +29,10 @@ public class RestExceptionHandler extends GenericExceptionHandler {
         return buildRestResponse(Status.UNAUTHORIZED, ex, uriInfo);
     }
 
+    @ServerExceptionMapper
+    public RestResponse<ApiError> mapPrivilegeNotFoundException(PrivilegeNotFoundException ex, UriInfo uriInfo) {
+        log.error("Privilege was not found in database", ex);
+        return buildRestResponse(Status.BAD_REQUEST, ex, uriInfo);
+    }
+
 }
