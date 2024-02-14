@@ -18,13 +18,11 @@ public class PrivilegeManagementService implements PrivilegeService{
     public PrivilegePageAndSortResponseDto findPrivilegesWithPaginationAndSorting(Integer pageNumber, Integer rowCount){
         var privileges = privilegeRepository.findPaginatedAndSortedById(pageNumber, rowCount);
 
-        var privilegeDTOs = privileges
-                .stream()
+        var privilegeDTOs = privileges.stream()
                 .map(privilegeMapper::privilegeToPrivilegeDto)
                 .toList();
 
-        return PrivilegePageAndSortResponseDto
-                .builder()
+        return PrivilegePageAndSortResponseDto.builder()
                 .privilegeDtoList(privilegeDTOs)
                 .build();
     }
