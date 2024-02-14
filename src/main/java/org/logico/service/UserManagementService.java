@@ -22,5 +22,4 @@ public class UserManagementService {
                 .orElseThrow(() -> new EntityNotFoundException("Can't find user by username: " + username));
         return userMapper.toDto(userFromDB);
     }
-
 }
