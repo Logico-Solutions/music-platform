@@ -1,5 +1,7 @@
 package org.logico.util;
 
+import java.util.Arrays;
+
 public enum RoleSortBy {
     CREATED_AT,
     ID,
@@ -7,16 +9,12 @@ public enum RoleSortBy {
     USERS,
     PRIVILEGE_ASSIGNMENTS;
 
-    public static RoleSortBy fromString(String string) {
-        try {
-            return valueOf(string.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            String upperCaseString = string.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
-            try {
-                return valueOf(upperCaseString);
-            } catch (IllegalArgumentException e2) {
-                throw new IllegalArgumentException("Unsupported sorting: " + string);
-            }
-        }
+    public static RoleSortBy fromName(String name) {
+        return Arrays.stream(RoleSortBy.values())
+                .filter(rsb -> rsb.name().equalsIgnoreCase(name)
+                        || rsb.name().equalsIgnoreCase(name.replaceAll("([a-z])([A-Z])", "$1_$2")))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Invalid role sorting: " + name));
     }
 }

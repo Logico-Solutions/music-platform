@@ -75,7 +75,7 @@ public class RoleManagementResource {
                     .status(Status.NO_CONTENT)
                     .build();
         }
-        roles = roleManagementService.sortRoles(roles, RoleSortBy.fromString(sortBy));
+        roles = roleManagementService.sortRoles(roles, RoleSortBy.fromName(sortBy));
         List<RoleResponseDto> dtoList = roleManagementService.mapRolesToDto(roles);
         return Response
                 .ok(dtoList)

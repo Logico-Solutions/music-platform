@@ -15,16 +15,16 @@ public class RoleSortByTest {
         String test1 = "privilegeAssignments";
         String test2 = "privilege_assignments";
         RoleSortBy expected = RoleSortBy.PRIVILEGE_ASSIGNMENTS;
-        assertEquals(expected, RoleSortBy.fromString(test1));
-        assertEquals(expected, RoleSortBy.fromString(test2));
+        assertEquals(expected, RoleSortBy.fromName(test1));
+        assertEquals(expected, RoleSortBy.fromName(test2));
     }
 
     @Test
     public void shouldThrowIllegalArgument() {
         String test = "test";
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> RoleSortBy.fromString(test));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> RoleSortBy.fromName(test));
 
-        String expected = "Unsupported sorting: " + test;
+        String expected = "Invalid role sorting: " + test;
         String actual = exception.getMessage();
 
         assertTrue(actual.contains(expected));

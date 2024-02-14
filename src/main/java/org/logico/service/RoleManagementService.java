@@ -68,7 +68,7 @@ public class RoleManagementService {
             return badRequestResponse;
         }
         try {
-            RoleSortBy.fromString(sortBy);
+            RoleSortBy.fromName(sortBy);
         } catch (IllegalArgumentException e) {
             log.warnv(e, "Illegal sort-by parameter: {0}", sortBy);
             return badRequestResponse;
