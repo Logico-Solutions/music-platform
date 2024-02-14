@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.AllArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.logico.model.PrivilegeAssignmentType;
 import org.logico.model.Role;
 import org.logico.model.User;
 import org.logico.repository.UserRepository;
@@ -31,7 +32,10 @@ public class JwtClaimService {
                 .map(User::getRole)
                 .map(Role::getPrivilegeAssignments)
                 .map(privilegeAssignments -> privilegeAssignments.stream()
-                        .anyMatch(pa -> pa.getPrivilege().getName().equals(privilegeName)))
+                        .anyMatch(pa -> {
+                            return pa.getPrivilege().getName().equals(privilegeName) &&
+                                    pa.getType().equals(PrivilegeAssignmentType.ALLOWED);
+                        }))
                 .orElse(false);
     }
 }
