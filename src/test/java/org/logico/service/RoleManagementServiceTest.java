@@ -1,6 +1,6 @@
 package org.logico.service;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.logico.mapper.RoleMapper;
 import org.logico.model.Role;
@@ -13,7 +13,7 @@ import java.util.Comparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 public class RoleManagementServiceTest {
 
 
