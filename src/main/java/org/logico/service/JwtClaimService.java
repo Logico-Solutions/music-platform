@@ -32,10 +32,8 @@ public class JwtClaimService {
                 .map(User::getRole)
                 .map(Role::getPrivilegeAssignments)
                 .map(privilegeAssignments -> privilegeAssignments.stream()
-                        .anyMatch(pa -> {
-                            return pa.getPrivilege().getName().equals(privilegeName) &&
-                                    pa.getType().equals(PrivilegeAssignmentType.ALLOWED);
-                        }))
+                        .anyMatch(pa -> pa.getPrivilege().getName().equals(privilegeName) &&
+                                pa.getType().equals(PrivilegeAssignmentType.ALLOWED)))
                 .orElse(false);
     }
 }
