@@ -2,6 +2,7 @@ package org.logico.resource;
 
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 import jakarta.ws.rs.core.Response.Status;
 import lombok.AllArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
@@ -50,6 +52,7 @@ public class RoleManagementResource {
             @APIResponse(responseCode = "400", description = "Illegal query parameter"),
             @APIResponse(responseCode = "401", description = "Unauthorized"),
             @APIResponse(responseCode = "403", description = "Not privileged to view roles")})
+    @Transactional
     public Response getRoles(@QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("10") int pageSize,
             @QueryParam("sort-by") @DefaultValue("name") String sortBy) {
@@ -60,17 +63,19 @@ public class RoleManagementResource {
             log.warnv("User does not have privilege: {0}", requiredPrivilege);
             return Response.status(Status.FORBIDDEN).build();
         }
+        ResponseBuilder paramsValidation = roleManagementService.validateGetRolesParams(pageIndex, pageSize, sortBy);
+        if (paramsValidation != null) {
+            return paramsValidation.build();
+        }
+        log.infov("Roles retrieved on page: {0}, with page size: {1}, and sorted by: {2}", pageIndex, pageSize, sortBy);
         List<Role> roles = roleManagementService.getRoles(pageIndex, pageSize);
         if (roles.isEmpty()) {
             log.infov("No elements on page: {0}", pageIndex);
-            return Response.status(Status.NO_CONTENT).build();
+            return Response
+                    .status(Status.NO_CONTENT)
+                    .build();
         }
-        try {
-            roles = roleManagementService.sortRoles(roles, RoleSortBy.fromString(sortBy));
-        } catch (IllegalArgumentException e) {
-            log.warnv(e, "Illegal sort-by parameter: {0}", sortBy);
-            return Response.status(Status.BAD_REQUEST).build();
-        }
+        roles = roleManagementService.sortRoles(roles, RoleSortBy.fromString(sortBy));
         List<RoleResponseDto> dtoList = roleManagementService.mapRolesToDto(roles);
         return Response
                 .ok(dtoList)

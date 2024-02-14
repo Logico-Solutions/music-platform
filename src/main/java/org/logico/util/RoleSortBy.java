@@ -15,7 +15,7 @@ public enum RoleSortBy {
             try {
                 return valueOf(upperCaseString);
             } catch (IllegalArgumentException e2) {
-                throw new IllegalArgumentException("Unsupported sorting criteria: " + string);
+                throw new IllegalArgumentException("Unsupported sorting: " + string);
             }
         }
     }
