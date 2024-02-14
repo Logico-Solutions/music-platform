@@ -3,12 +3,12 @@ package org.logico;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
-import org.logico.dto.PrivilegeDto;
 import org.logico.mapper.PrivilegeMapper;
 import org.logico.model.Privilege;
 
 import static io.smallrye.common.constraint.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @QuarkusTest
 public class PrivilegeMapperTest {
@@ -17,11 +17,11 @@ public class PrivilegeMapperTest {
 
     @Test
     public void shouldMapPrivilegeToPrivilegeDto() {
-        Privilege privilege = new Privilege();
+        var privilege = new Privilege();
         privilege.setId(1);
         privilege.setName("View Role");
 
-        PrivilegeDto privilegeDto = privilegeMapper.privilegeToPrivilegeDto(privilege);
+        var privilegeDto = privilegeMapper.privilegeToPrivilegeDto(privilege);
 
         assertNotNull(privilegeDto);
         assertEquals(privilege.getId(), privilegeDto.getId());
@@ -30,8 +30,8 @@ public class PrivilegeMapperTest {
 
     @Test
     public void shouldMapNullPrivilegeToNullDto() {
-        PrivilegeDto privilegeDto = privilegeMapper.privilegeToPrivilegeDto(null);
+        var privilegeDto = privilegeMapper.privilegeToPrivilegeDto(null);
 
-        assertEquals(null, privilegeDto);
+        assertNull(privilegeDto);
     }
 }

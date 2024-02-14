@@ -11,7 +11,7 @@ public class PrivilegeDtoTest {
 
     @Test
     public void shouldCreatePrivilegeDtoUsingNoArgsConstructor() {
-        PrivilegeDto privilege = new PrivilegeDto();
+        var privilege = new PrivilegeDto();
         privilege.setId(1);
         privilege.setName("View Role");
 
@@ -21,7 +21,7 @@ public class PrivilegeDtoTest {
 
     @Test
     public void shouldCreatePrivilegeDtoUsingAllArgsConstructor() {
-        PrivilegeDto privilege = new PrivilegeDto(1, "View Role");
+        var privilege = new PrivilegeDto(1, "View Role");
 
         assertThat(privilege.getId(), is(1));
         assertThat(privilege.getName(), is("View Role"));
@@ -29,7 +29,7 @@ public class PrivilegeDtoTest {
 
     @Test
     public void shouldCreatePrivilegeDtoUsingBuilder() {
-        PrivilegeDto privilege = PrivilegeDto.builder()
+        var privilege = PrivilegeDto.builder()
                 .id(1)
                 .name("View Role")
                 .build();

@@ -14,11 +14,11 @@ public class PrivilegePageAndSortResponseDtoTest {
 
     @Test
     public void shouldHandlePrivilegeDtoList() {
-        PrivilegeDto privilege1 = new PrivilegeDto(1, "View Role");
-        PrivilegeDto privilege2 = new PrivilegeDto(2, "Edit User");
+        var privilege1 = new PrivilegeDto(1, "View Role");
+        var privilege2 = new PrivilegeDto(2, "Edit User");
 
         var privilegeList = Arrays.asList(privilege1, privilege2);
-        PrivilegePageAndSortResponseDto response = new PrivilegePageAndSortResponseDto(privilegeList);
+        var response = new PrivilegePageAndSortResponseDto(privilegeList);
 
         assertThat(response.getPrivilegeDtoList(), hasSize(2));
         assertThat(response.getPrivilegeDtoList(), contains(privilege1, privilege2));

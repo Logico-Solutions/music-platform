@@ -42,12 +42,14 @@ public class PrivilegeRepositoryTest {
     @Test
     public void testPaginationWorksAsExpected() {
         var result = privilegeRepository.findPaginatedAndSortedById(0, 2);
+
         assertThat(result, hasSize(2));
     }
 
     @Test
     public void testSortingByIdAscendingOrder() {
         var result = privilegeRepository.findPaginatedAndSortedById(0, 3);
+
         assertThat(result, contains(
                 hasProperty("name", is("View Role")),
                 hasProperty("name", is("Create Role")),
@@ -58,18 +60,21 @@ public class PrivilegeRepositoryTest {
     @Test
     public void testEmptyResultOnPageBeyondDataRange() {
         var result = privilegeRepository.findPaginatedAndSortedById(5, 10);
+
         assertThat(result, is(empty()));
     }
 
     @Test
     public void testNonEmptyResultForValidPage() {
         var result = privilegeRepository.findPaginatedAndSortedById(0, 2);
+
         assertThat(result, hasSize(2));
     }
 
     @Test
     public void testCorrectnessOfDataInResults() {
         var result = privilegeRepository.findPaginatedAndSortedById(0, 2);
+
         assertThat(result, hasSize(2));
         assertThat(result.get(0).getName(), is("View Role"));
     }

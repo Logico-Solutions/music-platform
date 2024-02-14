@@ -36,7 +36,8 @@ public class PrivilegeManagementServiceTest {
         when(privilegeManagementService.findPrivilegesWithPaginationAndSorting(5, 2))
                 .thenReturn(new PrivilegePageAndSortResponseDto(Collections.emptyList()));
 
-        PrivilegePageAndSortResponseDto result = privilegeManagementService.findPrivilegesWithPaginationAndSorting(5, 2);
+        var result = privilegeManagementService.findPrivilegesWithPaginationAndSorting(5, 2);
+
         assertTrue(result.getPrivilegeDtoList().isEmpty());
     }
     @Test
@@ -47,7 +48,8 @@ public class PrivilegeManagementServiceTest {
         when(privilegeManagementService.findPrivilegesWithPaginationAndSorting(2, 2))
                 .thenReturn(lastPageResponse);
 
-        PrivilegePageAndSortResponseDto result = privilegeManagementService.findPrivilegesWithPaginationAndSorting(2, 2);
+        var result = privilegeManagementService.findPrivilegesWithPaginationAndSorting(2, 2);
+
         assertEquals(1, result.getPrivilegeDtoList().size());
         assertEquals("Edit Role", result.getPrivilegeDtoList().get(0).getName());
     }
@@ -62,7 +64,8 @@ public class PrivilegeManagementServiceTest {
         when(privilegeManagementService.findPrivilegesWithPaginationAndSorting(0, 3))
                 .thenReturn(sortedResponse);
 
-        PrivilegePageAndSortResponseDto result = privilegeManagementService.findPrivilegesWithPaginationAndSorting(0, 3);
+        var result = privilegeManagementService.findPrivilegesWithPaginationAndSorting(0, 3);
+
         assertEquals("Create Role", result.getPrivilegeDtoList().get(0).getName());
         assertEquals("Edit Role", result.getPrivilegeDtoList().get(1).getName());
         assertEquals("View Role", result.getPrivilegeDtoList().get(2).getName());
