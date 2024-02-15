@@ -53,11 +53,11 @@ public class RoleManagementService {
             return badRequestResponse;
         }
         try {
-            roleRepository.findAll(Sort.by(sortBy)).stream();
+            roleRepository.findAll(Sort.by(sortBy)).page(0, 1).stream();
             SortingDirections.fromString(direction);
         } catch (IllegalArgumentException | SemanticException | UnsupportedOperationException e) {
-            log.warnv("Illegal sorting parameters. Sort: {0}, Direction: {1}, Exception: {2}"
-                    , sortBy, direction, e.getMessage());
+            log.warnv("Illegal sorting parameters. Sort: {0}, Direction: {1}, Exception: {2}",
+                    sortBy, direction, e.getMessage());
             return badRequestResponse;
         }
         return null;
