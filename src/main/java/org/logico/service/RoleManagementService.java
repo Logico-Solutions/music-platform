@@ -33,14 +33,14 @@ public class RoleManagementService {
     }
 
     @Transactional
-    public List<Role> getRolesPaginatedSorted(int pageIndex, int pageSize, String sortByColumn, Direction direction) {
+    public List<Role> getRolesPaginatedSorted(int pageIndex, int pageSize, String sortBy, Direction direction) {
         return roleRepository
-                .findAll(Sort.by(sortByColumn).direction(direction))
+                .findAll(Sort.by(sortBy).direction(direction))
                 .page(pageIndex, pageSize)
                 .list();
     }
 
-    public Response validateGetRolesParams(int pageIndex, int pageSize, String sortByColumn, String direction) {
+    public Response validateGetRolesParams(int pageIndex, int pageSize, String sortBy, String direction) {
         final Response badRequestResponse = Response.status(Status.BAD_REQUEST).build();
         if (pageIndex < 0 || pageSize <= 0) {
             String warnMessage;
@@ -53,11 +53,11 @@ public class RoleManagementService {
             return badRequestResponse;
         }
         try {
-            roleRepository.findAll(Sort.by(sortByColumn)).stream();
+            roleRepository.findAll(Sort.by(sortBy)).stream();
             SortingDirections.fromString(direction);
         } catch (IllegalArgumentException | SemanticException | UnsupportedOperationException e) {
             log.warnv("Illegal sorting parameters. Sort: {0}, Direction: {1}, Exception: {2}"
-                    , sortByColumn, direction, e.getMessage());
+                    , sortBy, direction, e.getMessage());
             return badRequestResponse;
         }
         return null;
