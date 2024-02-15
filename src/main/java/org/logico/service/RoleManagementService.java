@@ -1,20 +1,20 @@
 package org.logico.service;
 
+import io.quarkus.panache.common.Sort;
+import io.quarkus.panache.common.Sort.Direction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
 import jakarta.ws.rs.core.Response.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
+import org.hibernate.query.SemanticException;
 import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapper;
-import org.logico.model.AuditEntity;
 import org.logico.model.Role;
 import org.logico.repository.RoleRepository;
-import org.logico.util.RoleSortBy;
+import org.logico.util.SortingDirections;
 
-import java.util.Comparator;
 import java.util.List;
 
 @JBossLog
@@ -33,44 +33,31 @@ public class RoleManagementService {
     }
 
     @Transactional
-    public List<Role> getRoles(int pageIndex, int pageSize) {
+    public List<Role> getRolesPaginatedSorted(int pageIndex, int pageSize, String sortByColumn, Direction direction) {
         return roleRepository
-                .findAll()
+                .findAll(Sort.by(sortByColumn).direction(direction))
                 .page(pageIndex, pageSize)
                 .list();
     }
 
-    public List<Role> sortRoles(List<Role> roles, RoleSortBy sortBy) {
-        return roles
-                .stream()
-                .sorted(getRoleComparator(sortBy))
-                .toList();
-    }
-
-    public Comparator<Role> getRoleComparator(RoleSortBy sortBy) {
-        return switch (sortBy) {
-            case CREATED_AT -> Comparator.comparing(AuditEntity::getCreatedAt);
-            case ID -> Comparator.comparing(Role::getId);
-            case NAME -> Comparator.comparing(Role::getName);
-            case USERS -> Comparator.comparing(r -> -1 * r.getUsers().size());
-            case PRIVILEGE_ASSIGNMENTS -> Comparator.comparing(r -> -1 * r.getPrivilegeAssignments().size());
-        };
-    }
-
-    public ResponseBuilder validateGetRolesParams(int pageIndex, int pageSize, String sortBy) {
-        final ResponseBuilder badRequestResponse = Response.status(Status.BAD_REQUEST);
-        if (pageIndex < 0) {
-            log.warnv("Page index must be >=0 : {0}", pageIndex);
-            return badRequestResponse;
-        }
-        if (pageSize <= 0) {
-            log.warnv("Page index must be >=0 : {0}", pageSize);
+    public Response validateGetRolesParams(int pageIndex, int pageSize, String sortByColumn, String direction) {
+        final Response badRequestResponse = Response.status(Status.BAD_REQUEST).build();
+        if (pageIndex < 0 || pageSize <= 0) {
+            String warnMessage;
+            if (pageIndex < 0) {
+                warnMessage = String.format("Page index must be >=0 : %d", pageIndex);
+            } else {
+                warnMessage = String.format("Page size must be >0 : %d", pageSize);
+            }
+            log.warn(warnMessage);
             return badRequestResponse;
         }
         try {
-            RoleSortBy.fromName(sortBy);
-        } catch (IllegalArgumentException e) {
-            log.warnv(e, "Illegal sort-by parameter: {0}", sortBy);
+            roleRepository.findAll(Sort.by(sortByColumn)).stream();
+            SortingDirections.fromString(direction);
+        } catch (IllegalArgumentException | SemanticException | UnsupportedOperationException e) {
+            log.warnv("Illegal sorting parameters. Sort: {0}, Direction: {1}, Exception: {2}"
+                    , sortByColumn, direction, e.getMessage());
             return badRequestResponse;
         }
         return null;
