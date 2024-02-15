@@ -1,24 +1,17 @@
 package org.logico.service;
 
+import io.quarkus.panache.common.Sort.Direction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.ResponseBuilder;
 import jakarta.ws.rs.core.Response.Status;
 import org.junit.jupiter.api.Test;
 import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapper;
-import org.logico.model.PrivilegeAssignment;
 import org.logico.model.Role;
-import org.logico.model.User;
 import org.logico.repository.RoleRepository;
-import org.logico.util.RoleSortBy;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -72,146 +65,65 @@ public class RoleManagementServiceTest {
     }
 
     @Test
-    public void shouldReturnPaginatedRoles() {
-        Role expectedRole = roleRepository.findById(2);
+    public void shouldReturnPaginatedAndSortedRoles() {
+        Role expectedRole = roleRepository.findById(1);
         List<Role> expected = new ArrayList<>();
         expected.add(expectedRole);
 
-        List<Role> actual = roleManagementService.getRoles(1, 1);
+        List<Role> actual = roleManagementService
+                .getRolesPaginatedSorted(2, 1, "id", Direction.Descending);
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldSortRoles() {
-        List<Role> expected = new ArrayList<>();
-        Role role1 = Role
-                .builder()
-                .id(1)
-                .name("testB")
-                .build();
-        Role role2 = Role
-                .builder()
-                .id(2)
-                .name("testA")
-                .build();
-        expected.add(role2);
-        expected.add(role1);
-
-        List<Role> roles = new ArrayList<>();
-        roles.add(role1);
-        roles.add(role2);
-
-        List<Role> actual = roleManagementService.sortRoles(roles, RoleSortBy.NAME);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldCompareRoleCreatedAt() {
-        Role role1 = Role
-                .builder()
-                .id(1)
-                .name("test1")
-                .createdAt(Instant.parse("2024-01-01T00:00:00Z"))
-                .build();
-        Role role2 = Role
-                .builder()
-                .id(2)
-                .name("test2")
-                .createdAt(Instant.parse("2024-01-02T00:00:00Z"))
-                .build();
-
-        Comparator<Role> actual = roleManagementService.getRoleComparator(RoleSortBy.CREATED_AT);
-        assertEquals(-1, actual.compare(role1, role2));
-    }
-
-    @Test
-    public void shouldCompareRoleId() {
-        Role role1 = Role
-                .builder()
-                .id(1)
-                .name("test1")
-                .build();
-        Role role2 = Role
-                .builder()
-                .id(2)
-                .name("test2")
-                .build();
-
-        Comparator<Role> actual = roleManagementService.getRoleComparator(RoleSortBy.ID);
-        assertEquals(-1, actual.compare(role1, role2));
-    }
-
-    @Test
-    public void shouldCompareRoleName() {
-        Role role1 = Role
-                .builder()
-                .id(1)
-                .name("test1")
-                .build();
-        Role role2 = Role
-                .builder()
-                .id(2)
-                .name("test2")
-                .build();
-
-        Comparator<Role> actual = roleManagementService.getRoleComparator(RoleSortBy.NAME);
-        assertEquals(-1, actual.compare(role1, role2));
-    }
-
-    @Test
-    public void shouldCompareRoleUsers() {
-        Set<User> users = new HashSet<>();
-        users.add(User
-                .builder()
-                .id(1)
-                .build());
-        Role role1 = Role
-                .builder()
-                .id(1)
-                .name("test1")
-                .users(users)
-                .build();
-        Role role2 = Role
-                .builder()
-                .id(2)
-                .name("test2")
-                .build();
-
-        Comparator<Role> actual = roleManagementService.getRoleComparator(RoleSortBy.USERS);
-        assertEquals(-1, actual.compare(role1, role2));
-    }
-
-    @Test
-    public void shouldCompareRolePrivileges() {
-        Set<PrivilegeAssignment> privilegeAssignments = new HashSet<>();
-        privilegeAssignments.add(new PrivilegeAssignment());
-        Role role1 = Role
-                .builder()
-                .id(1)
-                .name("test1")
-                .privilegeAssignments(privilegeAssignments)
-                .build();
-        Role role2 = Role
-                .builder()
-                .id(2)
-                .name("test2")
-                .build();
-
-        Comparator<Role> actual = roleManagementService.getRoleComparator(RoleSortBy.PRIVILEGE_ASSIGNMENTS);
-        assertEquals(-1, actual.compare(role1, role2));
     }
 
     @Test
     public void shouldReturnNullGetRolesQueryParamsValidation() {
-        ResponseBuilder actual = roleManagementService.validateGetRolesParams(0, 1, RoleSortBy.ID.name());
-        assertNull(actual);
+        try (Response actual = roleManagementService
+                .validateGetRolesParams(0, 1, "id", "ascending")) {
+            assertNull(actual);
+        }
     }
 
     @Test
-    public void shouldReturnBadRequestGetRolesQueryParamsValidation() {
+    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongPage() {
         int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
-        int actual = roleManagementService.validateGetRolesParams(-1, 1, RoleSortBy.ID.name())
-                .build().getStatus();
+        int actual;
+        try (Response response = roleManagementService
+                .validateGetRolesParams(-1, 1, "id", "ascending")) {
+            actual = response.getStatus();
+        }
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongSize() {
+        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
+        int actual;
+        try (Response response = roleManagementService
+                .validateGetRolesParams(0, 0, "id", "ascending")) {
+            actual = response.getStatus();
+        }
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongSortBy() {
+        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
+        int actual;
+        try (Response response = roleManagementService
+                .validateGetRolesParams(0, 1, "test", "ascending")) {
+            actual = response.getStatus();
+        }
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongDirection() {
+        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
+        int actual;
+        try (Response response = roleManagementService
+                .validateGetRolesParams(0, 1, "id", "test")) {
+            actual = response.getStatus();
+        }
         assertEquals(expected, actual);
     }
 }

@@ -38,7 +38,7 @@ public class RoleManagementResourceIT {
                 .header("Authorization", "Bearer " + getTokenForTest(johndoeCredentials))
                 .queryParam("page", 1)
                 .queryParam("size", 2)
-                .queryParam("sort-by", "privilegeAssignments")
+                .queryParam("sort-by", "createdAt")
                 .when()
                 .get("api/v1/roles")
                 .then()
@@ -84,6 +84,17 @@ public class RoleManagementResourceIT {
         given()
                 .header("Authorization", "Bearer " + getTokenForTest(johndoeCredentials))
                 .queryParam("sort-by", "test")
+                .when()
+                .get("api/v1/roles")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testGetRolesWrongDirection() {
+        given()
+                .header("Authorization", "Bearer " + getTokenForTest(johndoeCredentials))
+                .queryParam("direction", "test")
                 .when()
                 .get("api/v1/roles")
                 .then()
