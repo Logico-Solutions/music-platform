@@ -2,6 +2,7 @@ package org.logico.resource;
 
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -39,7 +40,7 @@ public class PrivilegeResource {
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = PrivilegeDto.class))})})
-    public Response getPrivilegeById(@PathParam("id") Integer id) {
+    public Response getPrivilegeById(@PathParam("id") @Min(0) Integer id) {
         return Response.ok()
                 .entity(privilegeManagementService.getPrivilegeById(id))
                 .build();

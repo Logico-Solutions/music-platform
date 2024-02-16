@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Mykhailo Usatenko
+      comment: Schema initialization with base entities - roles, privileges
+      changes:
+        - sqlFile:
+            splitStatements: true
+            stripComments: true
+            path: migrations/schema-1.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: 2
+      author: Mykhailo Usatenko
+      comment: Privileges initialization
+      changes:
+        - sqlFile:
+            splitStatements: true
+            stripComments: true
+            path: migrations/privileges-1.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: 3
+      author: Mykhailo Usatenko
+      comment: Roles initialization
+      changes:
+        - sqlFile:
+            splitStatements: true
+            stripComments: true
+            path: migrations/roles-1.sql
+            relativeToChangelogFile: true
