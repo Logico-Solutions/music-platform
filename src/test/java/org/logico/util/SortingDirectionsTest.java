@@ -16,6 +16,7 @@ public class SortingDirectionsTest {
         String test1 = "ascending";
         String test2 = "ASC";
         Direction expected = SortingDirections.ASCENDING;
+
         assertEquals(expected, SortingDirections.fromString(test1));
         assertEquals(expected, SortingDirections.fromString(test2));
     }

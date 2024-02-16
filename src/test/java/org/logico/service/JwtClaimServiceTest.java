@@ -1,5 +1,6 @@
 package org.logico.service;
 
+import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.test.junit.QuarkusTest;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -16,8 +17,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +44,7 @@ public class JwtClaimServiceTest {
     }
 
     @Test
-    public void shouldReturnTrueOnHavingPrivilege() {
+    public void shouldNotThrowExceptionCheckPrivilege() {
         Role role = new Role();
         Privilege privilege = Privilege
                 .builder()
@@ -59,13 +61,15 @@ public class JwtClaimServiceTest {
         role.setPrivilegeAssignments(privilegeAssignments);
         user.setRole(role);
 
-        boolean actual = jwtClaimService.hasPrivilege("test");
-        assertTrue(actual);
+        assertDoesNotThrow(() -> jwtClaimService.checkPrivilege("test"));
     }
 
     @Test
     public void shouldReturnFalseOnHavingPrivilege() {
-        boolean actual = jwtClaimService.hasPrivilege("test");
-        assertFalse(actual);
+        String privilegeName = "test";
+
+        ForbiddenException exception = assertThrows(ForbiddenException.class,
+                () -> jwtClaimService.checkPrivilege(privilegeName));
+        assertEquals(String.format("User doesn't have privilege %s", privilegeName), exception.getMessage());
     }
 }

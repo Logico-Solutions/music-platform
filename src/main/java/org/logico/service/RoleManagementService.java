@@ -4,8 +4,7 @@ import io.quarkus.panache.common.Sort;
 import io.quarkus.panache.common.Sort.Direction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
 import org.hibernate.query.SemanticException;
@@ -40,26 +39,16 @@ public class RoleManagementService {
                 .list();
     }
 
-    public Response validateGetRolesParams(int pageIndex, int pageSize, String sortBy, String direction) {
-        final Response badRequestResponse = Response.status(Status.BAD_REQUEST).build();
-        if (pageIndex < 0 || pageSize <= 0) {
-            String warnMessage;
-            if (pageIndex < 0) {
-                warnMessage = String.format("Page index must be >=0 : %d", pageIndex);
-            } else {
-                warnMessage = String.format("Page size must be >0 : %d", pageSize);
-            }
-            log.warn(warnMessage);
-            return badRequestResponse;
-        }
+    public void validateGetRolesParams(String sortBy, String direction) {
         try {
             roleRepository.findAll(Sort.by(sortBy)).page(0, 1).stream();
             SortingDirections.fromString(direction);
         } catch (IllegalArgumentException | SemanticException | UnsupportedOperationException e) {
-            log.warnv("Illegal sorting parameters. Sort: {0}, Direction: {1}, Exception: {2}",
+            log.warnv(
+                    "Illegal sorting parameters. Sort: {0}, Direction: {1}, Exception: {2}",
                     sortBy, direction, e.getMessage());
-            return badRequestResponse;
+            throw new BadRequestException(
+                    String.format("Illegal sorting parameters. Sort: %s, Direction: %s", sortBy, direction));
         }
-        return null;
     }
 }

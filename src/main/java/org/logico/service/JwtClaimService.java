@@ -1,5 +1,6 @@
 package org.logico.service;
 
+import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.AllArgsConstructor;
@@ -26,14 +27,20 @@ public class JwtClaimService {
         return jsonWebToken.getName();
     }
 
-    public boolean hasPrivilege(String privilegeName) {
+    public void checkPrivilege(String privilegeName) {
         String username = this.getUsername();
-        return userRepository.findUserByUsername(username)
+        boolean doesHavePrivilege = userRepository.findUserByUsername(username)
                 .map(User::getRole)
                 .map(Role::getPrivilegeAssignments)
                 .map(privilegeAssignments -> privilegeAssignments.stream()
                         .anyMatch(pa -> pa.getPrivilege().getName().equals(privilegeName) &&
                                 pa.getType().equals(PrivilegeAssignmentType.ALLOWED)))
                 .orElse(false);
+
+        if (doesHavePrivilege) {
+            log.infov("User has privilege {0}", privilegeName);
+            return;
+        }
+        throw new ForbiddenException(String.format("User doesn't have privilege %s", privilegeName));
     }
 }

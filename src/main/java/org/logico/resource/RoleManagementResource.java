@@ -3,6 +3,7 @@ package org.logico.resource;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -52,22 +53,13 @@ public class RoleManagementResource {
             @APIResponse(responseCode = "401", description = "Unauthorized"),
             @APIResponse(responseCode = "403", description = "Not privileged to view roles")})
     @Transactional
-    public Response getRoles(@QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("10") int pageSize,
+    public Response getRoles(@QueryParam("page") @DefaultValue("0") @Min(0) int pageIndex,
+            @QueryParam("size") @DefaultValue("10") @Min(1) int pageSize,
             @QueryParam("sort-by") @DefaultValue("id") String sortBy,
             @QueryParam("direction") @DefaultValue("Ascending") String direction) {
         final String requiredPrivilege = PrivilegeName.VIEW_ROLE;
-        if (jwtClaimService.hasPrivilege(requiredPrivilege)) {
-            log.infov("User has privilege: {0}", requiredPrivilege);
-        } else {
-            log.warnv("User does not have privilege: {0}", requiredPrivilege);
-            return Response.status(Status.FORBIDDEN).build();
-        }
-        Response paramsValidation = roleManagementService.validateGetRolesParams(pageIndex, pageSize, sortBy, direction);
-        if (paramsValidation != null) {
-            return paramsValidation;
-        }
-        log.infov("Roles retrieved on page: {0}, with page size: {1}, and sorted by: {2}", pageIndex, pageSize, sortBy);
+        jwtClaimService.checkPrivilege(requiredPrivilege);
+        roleManagementService.validateGetRolesParams(sortBy, direction);
         List<Role> roles = roleManagementService.getRolesPaginatedSorted(pageIndex, pageSize,
                 sortBy, SortingDirections.fromString(direction));
         if (roles.isEmpty()) {
@@ -76,6 +68,8 @@ public class RoleManagementResource {
                     .status(Status.NO_CONTENT)
                     .build();
         }
+        log.infov("Roles retrieved on page: {0}, with page size: {1}, sorted by: {2}, direction: {3}",
+                pageIndex, pageSize, sortBy, direction);
         List<RoleResponseDto> dtoList = roleManagementService.mapRolesToDto(roles);
         return Response
                 .ok(dtoList)

@@ -2,8 +2,7 @@ package org.logico.service;
 
 import io.quarkus.panache.common.Sort.Direction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapper;
@@ -13,8 +12,9 @@ import org.logico.repository.RoleRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -76,54 +76,13 @@ public class RoleManagementServiceTest {
     }
 
     @Test
-    public void shouldReturnNullGetRolesQueryParamsValidation() {
-        try (Response actual = roleManagementService
-                .validateGetRolesParams(0, 1, "id", "ascending")) {
-            assertNull(actual);
-        }
+    public void shouldNotThrowExceptionQueryParamsValidation() {
+        assertDoesNotThrow(() -> roleManagementService.validateGetRolesParams("id", "ascending"));
     }
 
     @Test
-    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongPage() {
-        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
-        int actual;
-        try (Response response = roleManagementService
-                .validateGetRolesParams(-1, 1, "id", "ascending")) {
-            actual = response.getStatus();
-        }
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongSize() {
-        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
-        int actual;
-        try (Response response = roleManagementService
-                .validateGetRolesParams(0, 0, "id", "ascending")) {
-            actual = response.getStatus();
-        }
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongSortBy() {
-        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
-        int actual;
-        try (Response response = roleManagementService
-                .validateGetRolesParams(0, 1, "test", "ascending")) {
-            actual = response.getStatus();
-        }
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldReturnBadRequestGetRolesQueryParamsValidationWrongDirection() {
-        int expected = Response.status(Status.BAD_REQUEST).build().getStatus();
-        int actual;
-        try (Response response = roleManagementService
-                .validateGetRolesParams(0, 1, "id", "test")) {
-            actual = response.getStatus();
-        }
-        assertEquals(expected, actual);
+    public void shouldReturnBadRequestExceptionGetRolesQueryParamsValidation() {
+        assertThrows(BadRequestException.class,
+                () -> roleManagementService.validateGetRolesParams("test", "test"));
     }
 }
