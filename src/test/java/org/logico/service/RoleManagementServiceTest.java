@@ -2,7 +2,6 @@ package org.logico.service;
 
 import io.quarkus.panache.common.Sort.Direction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.ws.rs.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.logico.dto.response.RoleResponseDto;
 import org.logico.mapper.RoleMapperUtils;
@@ -11,9 +10,7 @@ import org.logico.repository.RoleRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -49,16 +46,5 @@ public class RoleManagementServiceTest {
         List<RoleResponseDto> actual = roleManagementService
                 .getDtoRolesPaginatedSorted(2, 1, "id", "descending");
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldNotThrowExceptionQueryParamsValidation() {
-        assertDoesNotThrow(() -> roleManagementService.validateGetRolesParams("id", "ascending"));
-    }
-
-    @Test
-    public void shouldReturnBadRequestExceptionGetRolesQueryParamsValidation() {
-        assertThrows(BadRequestException.class,
-                () -> roleManagementService.validateGetRolesParams("test", "test"));
     }
 }

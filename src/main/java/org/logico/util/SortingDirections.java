@@ -17,8 +17,8 @@ public class SortingDirections {
     public static Direction fromString(String string) {
         return ALL_DIRECTIONS
                 .stream()
-                .filter(d -> d.name().equalsIgnoreCase(string)
-                        || d.name().equalsIgnoreCase(String.format("%sending", string)))
+                .filter(d -> d.name().equalsIgnoreCase(string) ||
+                        d.name().equalsIgnoreCase(String.format("%sending", string)))
                 .findFirst()
                 .orElseThrow(
                         () -> new IllegalArgumentException(String.format("Invalid sorting direction: %s", string)));

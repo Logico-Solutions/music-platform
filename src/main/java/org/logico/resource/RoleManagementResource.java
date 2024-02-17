@@ -25,6 +25,8 @@ import org.logico.service.JwtClaimService;
 import org.logico.service.RoleManagementService;
 import org.logico.util.Constants;
 import org.logico.util.PrivilegeName;
+import org.logico.validation.annotation.ValidRoleSortBy;
+import org.logico.validation.annotation.ValidSortDirection;
 
 import java.util.List;
 
@@ -53,8 +55,8 @@ public class RoleManagementResource {
     @Transactional
     public Response getRoles(@QueryParam("page") @DefaultValue("0") @Min(0) int pageIndex,
             @QueryParam("size") @DefaultValue("10") @Min(1) int pageSize,
-            @QueryParam("sort-by") @DefaultValue("id") String sortBy,
-            @QueryParam("direction") @DefaultValue("Ascending") String direction) {
+            @QueryParam("sort-by") @DefaultValue("id") @ValidRoleSortBy String sortBy,
+            @QueryParam("direction") @DefaultValue("Ascending") @ValidSortDirection String direction) {
         final String requiredPrivilege = PrivilegeName.VIEW_ROLE;
         jwtClaimService.checkPrivilege(requiredPrivilege);
 
