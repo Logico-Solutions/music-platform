@@ -12,10 +12,14 @@ import java.util.stream.Stream;
 
 public class RoleSortByValidator implements ConstraintValidator<ValidRoleSortBy, String> {
 
-    private static final List<Field> ROLE_FIELDS = Stream
-            .of(Role.class.getDeclaredFields(), AuditEntity.class.getDeclaredFields())
-            .flatMap(Stream::of)
-            .toList();
+    private static final List<Field> ROLE_FIELDS;
+
+    static {
+        ROLE_FIELDS = Stream
+                .of(Role.class.getDeclaredFields(), AuditEntity.class.getDeclaredFields())
+                .flatMap(Stream::of)
+                .toList();
+    }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

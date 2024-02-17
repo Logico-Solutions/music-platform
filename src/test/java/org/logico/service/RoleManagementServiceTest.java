@@ -18,11 +18,10 @@ import static org.mockito.Mockito.when;
 @QuarkusTest
 public class RoleManagementServiceTest {
 
-
     private final RoleRepository roleRepository = spy(RoleRepository.class);
     private final RoleMapperUtils roleMapperUtils = mock(RoleMapperUtils.class);
     private final RoleManagementService roleManagementService = new RoleManagementService(roleRepository,
-            roleMapperUtils);
+                                                                                        roleMapperUtils);
 
     @Test
     public void shouldReturnPaginatedSortedRoles() {
