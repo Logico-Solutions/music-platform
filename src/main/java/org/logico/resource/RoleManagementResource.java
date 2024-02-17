@@ -21,12 +21,10 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.logico.dto.response.RoleResponseDto;
-import org.logico.model.Role;
 import org.logico.service.JwtClaimService;
 import org.logico.service.RoleManagementService;
 import org.logico.util.Constants;
 import org.logico.util.PrivilegeName;
-import org.logico.util.SortingDirections;
 
 import java.util.List;
 
@@ -59,20 +57,18 @@ public class RoleManagementResource {
             @QueryParam("direction") @DefaultValue("Ascending") String direction) {
         final String requiredPrivilege = PrivilegeName.VIEW_ROLE;
         jwtClaimService.checkPrivilege(requiredPrivilege);
-        roleManagementService.validateGetRolesParams(sortBy, direction);
-        List<Role> roles = roleManagementService.getRolesPaginatedSorted(pageIndex, pageSize,
-                sortBy, SortingDirections.fromString(direction));
-        if (roles.isEmpty()) {
+
+        List<RoleResponseDto> roleDtoList = roleManagementService.getDtoRolesPaginatedSorted(pageIndex, pageSize,
+                sortBy, direction);
+        if (roleDtoList.isEmpty()) {
             log.infov("No elements on page: {0}", pageIndex);
             return Response
                     .status(Status.NO_CONTENT)
                     .build();
         }
-        log.infov("Roles retrieved on page: {0}, with page size: {1}, sorted by: {2}, direction: {3}",
-                pageIndex, pageSize, sortBy, direction);
-        List<RoleResponseDto> dtoList = roleManagementService.mapRolesToDto(roles);
+
         return Response
-                .ok(dtoList)
+                .ok(roleDtoList)
                 .build();
     }
 }

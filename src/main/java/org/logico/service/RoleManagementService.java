@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
 import org.hibernate.query.SemanticException;
 import org.logico.dto.response.RoleResponseDto;
-import org.logico.mapper.RoleMapper;
+import org.logico.mapper.RoleMapperUtils;
 import org.logico.model.Role;
 import org.logico.repository.RoleRepository;
 import org.logico.util.SortingDirections;
@@ -22,14 +22,7 @@ import java.util.List;
 public class RoleManagementService {
 
     private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
-
-    public List<RoleResponseDto> mapRolesToDto(List<Role> roles) {
-        return roles
-                .stream()
-                .map(roleMapper::toDto)
-                .toList();
-    }
+    private final RoleMapperUtils roleMapperUtils;
 
     @Transactional
     public List<Role> getRolesPaginatedSorted(int pageIndex, int pageSize, String sortBy, Direction direction) {
@@ -37,6 +30,16 @@ public class RoleManagementService {
                 .findAll(Sort.by(sortBy).direction(direction))
                 .page(pageIndex, pageSize)
                 .list();
+    }
+
+    public List<RoleResponseDto> getDtoRolesPaginatedSorted(int pageIndex, int pageSize, String sortBy,
+            String direction) {
+        this.validateGetRolesParams(sortBy, direction);
+        List<Role> roles = this.getRolesPaginatedSorted(pageIndex, pageSize,
+                sortBy, SortingDirections.fromString(direction));
+        log.infov("Roles retrieved on page: {0}, with page size: {1}, sorted by: {2}, direction: {3}",
+                pageIndex, pageSize, sortBy, direction);
+        return roleMapperUtils.toDto(roles);
     }
 
     public void validateGetRolesParams(String sortBy, String direction) {
