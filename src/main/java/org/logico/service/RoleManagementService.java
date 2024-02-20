@@ -17,12 +17,12 @@ import java.util.List;
 @JBossLog
 @RequiredArgsConstructor
 @ApplicationScoped
+@Transactional
 public class RoleManagementService {
 
     private final RoleRepository roleRepository;
     private final RoleMapperUtils roleMapperUtils;
 
-    @Transactional
     public List<Role> getRolesPaginatedSorted(int pageIndex, int pageSize, String sortBy, Direction direction) {
         return roleRepository
                 .findAll(Sort.by(sortBy).direction(direction))

@@ -2,7 +2,6 @@ package org.logico.resource;
 
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -52,7 +51,6 @@ public class RoleManagementResource {
             @APIResponse(responseCode = "400", description = "Illegal query parameter"),
             @APIResponse(responseCode = "401", description = "Unauthorized"),
             @APIResponse(responseCode = "403", description = "Not privileged to view roles")})
-    @Transactional
     public Response getRoles(@QueryParam("page") @DefaultValue("0") @Min(0) int pageIndex,
             @QueryParam("size") @DefaultValue("10") @Min(1) int pageSize,
             @QueryParam("sort-by") @DefaultValue("id") @ValidRoleSortBy String sortBy,
