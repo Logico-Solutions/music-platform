@@ -1,0 +1,49 @@
+quarkus:
+# H2
+  datasource:
+    db-kind: h2
+    username: sa
+    password: password
+    jdbc:
+      driver: org.h2.Driver
+      url: jdbc:h2:file:./database;AUTO_SERVER=true;DB_CLOSE_DELAY=-1
+  liquibase:
+    migrate-at-start: false
+  hibernate-orm:
+    sql-load-script: changelog/release-1.0/migrations/privileges-1.sql, changelog/release-1.0/migrations/roles-1.sql, changelog/release-1.0/migrations/users-1.sql
+    log:
+      sql: true
+    database:
+      generation: drop-and-create
+# /H2
+app:
+  password:
+    secret: ${PASSWORD_SECRET:secret}
+    iteration: ${PASSWORD_ITERATION:33}
+    length: ${PASSWORD_KEY_LENGTH:256}
+  token:
+    # ttl duration should be defined in ISO 8601 format. Required prefix P (period), T (time). seconds can be double
+    ttl: PT15M
+    refresh:
+      ttl: PT30M
+      secret: ${JWT_REFRESH_SECRET:secret}
+mp:
+  jwt:
+    verify:
+      issuer: "https://logico.solutions/issuer"
+      publickey:
+        location: ${PUBLIC_KEY:publickey.pem}
+smallrye:
+  jwt:
+    enabled: true
+    new-token:
+      issuer: "https://logico.solutions/issuer"
+    encrypt:
+      key:
+        location: ${PUBLIC_KEY:publickey.pem}
+    decrypt:
+      key:
+        location: ${PRIVATE_KEY:privatekey.pem}
+    sign:
+      key:
+        location: ${PRIVATE_KEY:privatekey.pem}
