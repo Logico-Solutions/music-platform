@@ -1,5 +1,6 @@
 package org.logico.resource;
 
+import io.quarkus.panache.common.Sort.Direction;
 import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.Min;
@@ -23,6 +24,7 @@ import org.logico.dto.response.PrivilegePageAndSortResponseDto;
 import org.logico.service.PrivilegeManagementService;
 
 import static org.logico.util.Constants.BAD_REQUEST;
+import static org.logico.util.Constants.NOT_FOUND_ERROR;
 import static org.logico.util.Constants.SERVER_ERROR;
 import static org.logico.util.Constants.SUCCESSFULLY_RETRIEVED;
 
@@ -38,7 +40,7 @@ public class PrivilegeResource {
     private final PrivilegeManagementService privilegeManagementService;
 
     @GET
-    @Path("/paginated-sorted")
+    @Path("/list/paginated-sorted")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = SUCCESSFULLY_RETRIEVED, content = {
                     @Content(
@@ -52,14 +54,20 @@ public class PrivilegeResource {
                     @Content(
                             mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ApiError.class)
                     )
-            })})
+            }),
+            @APIResponse(responseCode = "404", description = NOT_FOUND_ERROR, content = {
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ApiError.class)
+                    )
+            })
+    })
     @PermitAll
     public Response getPrivilegesWithPaginationAndSorting(@QueryParam("pageNumber") @NotNull @Min(0) Integer pageNumber,
-            @QueryParam("rowCount") @NotNull @Min(1) Integer rowCount){
-          log.infov("Received request for privilege listing with pagination. Page number: {0}, Row count: {1}",
-                  pageNumber, rowCount);
+            @QueryParam("rowCount") @NotNull @Min(1) Integer rowCount, @QueryParam("direction") @NotNull Direction direction){
+          log.infov("Received request for privilege listing with pagination. Page number: {0}, Row count: {1}, Direction : {2}",
+                  pageNumber, rowCount, direction);
           return Response.ok()
-                  .entity(privilegeManagementService.findPrivilegesWithPaginationAndSorting(pageNumber, rowCount))
+                  .entity(privilegeManagementService.findPrivilegesWithPaginationAndSorting(pageNumber, rowCount, direction))
                   .build();
     }
 }

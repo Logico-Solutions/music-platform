@@ -1,5 +1,6 @@
 package org.logico;
 
+import io.quarkus.panache.common.Sort.Direction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 0)
                 .queryParam("rowCount", 2)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(200)
                 .body("privilegeDtoList.size()", is(2));
@@ -29,8 +31,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 1)
                 .queryParam("rowCount", 2)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(200)
                 .body("privilegeDtoList.size()", is(2));
@@ -41,8 +44,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 2)
                 .queryParam("rowCount", 2)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(200)
                 .body("privilegeDtoList.size()", is(2));
@@ -53,8 +57,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", -1)
                 .queryParam("rowCount", 2)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(400);
     }
@@ -64,8 +69,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 1)
                 .queryParam("rowCount", 0)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(400);
     }
@@ -75,8 +81,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 10)
                 .queryParam("rowCount", 2)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(200)
                 .body("privilegeDtoList.size()", is(0));
@@ -87,8 +94,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 0)
                 .queryParam("rowCount", 100)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(200)
                 .body("privilegeDtoList.size()", is(6));
@@ -99,8 +107,9 @@ public class PrivilegeResourceTest {
         given()
                 .queryParam("pageNumber", 0)
                 .queryParam("rowCount", 4)
+                .queryParam("direction", Direction.Ascending)
                 .when()
-                .get("/paginated-sorted")
+                .get("/list/paginated-sorted")
                 .then()
                 .statusCode(200)
                 .body("privilegeDtoList.get(0).id", is(1))
