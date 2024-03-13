@@ -37,10 +37,9 @@ public class JwtClaimService {
                                 pa.getType().equals(PrivilegeAssignmentType.ALLOWED)))
                 .orElse(false);
 
-        if (doesHavePrivilege) {
-            log.infov("User has privilege {0}", privilegeName);
-            return;
+        if (!doesHavePrivilege) {
+            throw new ForbiddenException(String.format("User doesn't have privilege %s", privilegeName));
         }
-        throw new ForbiddenException(String.format("User doesn't have privilege %s", privilegeName));
+        log.infov("User has privilege {0}", privilegeName);
     }
 }
