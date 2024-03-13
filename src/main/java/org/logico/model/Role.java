@@ -15,13 +15,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor

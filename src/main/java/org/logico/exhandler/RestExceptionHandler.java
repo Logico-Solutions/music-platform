@@ -3,6 +3,8 @@ package org.logico.exhandler;
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.security.AuthenticationFailedException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.UriInfo;
 import lombok.extern.jbosslog.JBossLog;
@@ -29,4 +31,15 @@ public class RestExceptionHandler extends GenericExceptionHandler {
         return buildRestResponse(Status.UNAUTHORIZED, ex, uriInfo);
     }
 
+    @ServerExceptionMapper
+    public RestResponse<ApiError> mapForbiddenException(ForbiddenException ex, UriInfo uriInfo) {
+        log.error("Required privileges are missing.", ex);
+        return buildRestResponse(Status.FORBIDDEN, ex, uriInfo);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ApiError> mapBadRequestException(BadRequestException ex, UriInfo uriInfo) {
+        log.error("400 Bad Request.", ex);
+        return buildRestResponse(Status.BAD_REQUEST, ex, uriInfo);
+    }
 }
