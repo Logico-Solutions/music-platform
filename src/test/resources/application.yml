@@ -1,8 +1,6 @@
 quarkus:
   banner:
     enabled: false
-  swagger-ui:
-    always-include: true
   datasource:
     db-kind: oracle
     username: ${DATASOURCE_USERNAME}
@@ -14,7 +12,7 @@ quarkus:
     log:
       sql: false
     database:
-      generation: drop-and-create
+      generation: validate
   liquibase:
     migrate-at-start: true
     change-log: db/changelog/db.changelog-master.yaml
