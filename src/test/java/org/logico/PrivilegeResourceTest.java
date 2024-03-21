@@ -1,6 +1,7 @@
 package org.logico;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.logico.dto.PrivilegeDto;
@@ -16,11 +17,10 @@ public class PrivilegeResourceTest {
     final UserCredentials userCredentials = new UserCredentials("johndoe", "123");
 
     @Test
+    @TestSecurity(user = "johndoe", roles = {"Admin-1"})
     void testGetPrivilegeByIdSuccess() {
-        final String jwttoken = setupToken();
         PrivilegeDto dto = PrivilegeDto.builder().id(1).name("View Role").build();
         given()
-                .header("Authorization", "Bearer " + jwttoken)
                 .when()
                 .get("/api/v1/privilege/1")
                 .then()
@@ -33,10 +33,9 @@ public class PrivilegeResourceTest {
     }
 
     @Test
+    @TestSecurity(user = "johndoe", roles = {"Admin-1"})
     void testGetPrivilegeByIdFailure() {
-        final String jwttoken = setupToken();
         given()
-                .header("Authorization", "Bearer " + jwttoken)
                 .when()
                 .get("/api/v1/privilege/" + Integer.MAX_VALUE)
                 .then()
@@ -46,22 +45,5 @@ public class PrivilegeResourceTest {
 
     }
 
-
-    /**
-     * technical method to get jwt token before testing endpoints that requires authentication
-     *
-     * @return String token
-     */
-    private String setupToken() {
-        return given().
-                contentType(ContentType.JSON)
-                .body(userCredentials)
-                .when()
-                .post("api/v1/login")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("accessToken");
-    }
 
 }
