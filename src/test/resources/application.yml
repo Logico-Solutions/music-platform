@@ -1,0 +1,53 @@
+quarkus:
+  banner:
+    enabled: false
+  swagger-ui:
+    always-include: true
+  datasource:
+    db-kind: oracle
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    jdbc:
+      driver: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@${DATASOURCE_URL}
+  hibernate-orm:
+    log:
+      sql: false
+    database:
+      generation: validate
+  liquibase:
+    migrate-at-start: true
+    change-log: db/changelog/db.changelog-master.yaml
+  log:
+    console:
+      json: false
+app:
+  password:
+    secret: ${PASSWORD_SECRET}
+    iteration: ${PASSWORD_ITERATION}
+    length: ${PASSWORD_KEY_LENGTH}
+  token:
+    # ttl duration should be defined in ISO 8601 format. Required prefix P (period), T (time). seconds can be double
+    ttl: PT15M
+    refresh:
+      ttl: PT30M
+      secret: ${JWT_REFRESH_SECRET}
+mp:
+  jwt:
+    verify:
+      issuer: "https://logico.solutions/issuer"
+      publickey:
+        location: ${PUBLIC_KEY}
+smallrye:
+  jwt:
+    new-token:
+      issuer: "https://logico.solutions/issuer"
+    encrypt:
+      key:
+        location: ${PUBLIC_KEY}
+    decrypt:
+      key:
+        location: ${PRIVATE_KEY}
+    sign:
+      key:
+        location: ${PRIVATE_KEY}
