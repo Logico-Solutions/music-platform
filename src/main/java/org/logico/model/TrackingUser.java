@@ -19,14 +19,14 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 public class TrackingUser extends PanacheMongoEntity {
 
     @BsonProperty("address")
-    String address;
+    private String address;
 
     @BsonProperty("user_email")
-    String userEmail;
+    private String userEmail;
 
     @BsonProperty("location")
-    Point location;
+    private Point location;
 
     @BsonProperty("switch_tracking")
-    boolean switchTracking;
+    private boolean switchTracking;
 }
