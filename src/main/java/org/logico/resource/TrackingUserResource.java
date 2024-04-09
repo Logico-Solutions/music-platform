@@ -11,7 +11,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import lombok.AllArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
 import org.bson.types.ObjectId;
@@ -27,7 +26,7 @@ import org.logico.service.TrackingUserService;
 import org.logico.util.Constants;
 
 @Tag(name = "Tracking user data REST endpoints")
-@Path("/local")
+@Path("/location")
 @JBossLog
 @AllArgsConstructor
 @Consumes(MediaType.APPLICATION_JSON)
@@ -36,9 +35,8 @@ public class TrackingUserResource {
 
     private final TrackingUserService trackingUserService;
 
-    //    CRUD
     @POST
-    @Path("/create")
+    @Path("/create-user")
     @Operation(summary = "Create mongo user")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
@@ -46,18 +44,17 @@ public class TrackingUserResource {
             @APIResponse(responseCode = "401", description = "Unauthorized")})
     public Response createTrackingUser(TrackingUser trackingUser) {
         log.info("Create mongo user");
-        trackingUserService.create(trackingUser);
         return Response.ok()
-                .status(Status.CREATED)
+                .entity(trackingUserService.create(trackingUser))
                 .build();
     }
 
     @GET
-    @Path("/users")
+    @Path("/show-users")
     @Operation(summary = "Show mongo users and data")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
     public Response showTrackingUsers() {
         log.info("Show mongo users");
@@ -66,26 +63,40 @@ public class TrackingUserResource {
                 .build();
     }
 
-    @PATCH
-    @Path("/update/email/{objectId}")
-    @Operation(summary = "Update mongo user email by id")
+    @GET
+    @Path("/user-get-by-id/{id}")
+    @Operation(summary = "Get mongo user email by mongo id")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
-    public Response updateTrackingUser(@PathParam("objectId") ObjectId objectId, @QueryParam("email") String email) {
-        log.info("Update mongo user email by id");
+    public Response getTrackingUserEmail(@PathParam("id") ObjectId id) {
+        log.info("Find mongo user email by mongo id");
         return Response.ok()
-                .entity(trackingUserService.updateEmail(objectId, email))
+                .entity(trackingUserService.getEmail(id))
                 .build();
     }
 
     @PATCH
-    @Path("/update/switch/{email}")
+    @Path("/email-update-by-id/{id}")
     @Operation(summary = "Update mongo user email by id")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
+            @APIResponse(responseCode = "401", description = "Unauthorized")})
+    public Response updateTrackingUser(@PathParam("id") ObjectId id, @QueryParam("email") String email) {
+        log.info("Update mongo user email by id");
+        return Response.ok()
+                .entity(trackingUserService.updateEmail(id, email))
+                .build();
+    }
+
+    @PATCH
+    @Path("/switch-update-by-email/{email}")
+    @Operation(summary = "Update mongo user email by id")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
     public Response updateSwitchTracking(@PathParam("email") String email, @QueryParam("switch") boolean swtch) {
         log.info("Update mongo user tracking by id");
@@ -95,11 +106,11 @@ public class TrackingUserResource {
     }
 
     @DELETE
-    @Path("/delete/{email}")
+    @Path("/user-delete-by-email/{email}")
     @Operation(summary = "Delete mongo user by email")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
     public Response deleteTrackingUser(@PathParam("email") String email) {
         log.info("Delete mongo user");
@@ -108,32 +119,46 @@ public class TrackingUserResource {
                 .build();
     }
 
-    //    OTHER
     @GET
-    @Path("/id/{id}")
-    @Operation(summary = "Get mongo user email by mongo id")
+    @Path("/user-get-by-email/{email}")
+    @Operation(summary = "Get mongo user data by email")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
-    public Response getTrackingUserEmailById(@PathParam("id") ObjectId id) {
-        log.info("Find mongo user email by mongo id");
+    public Response getTrackingUser(@PathParam("email") String email) {
+        log.info("Find mongo user by email");
         return Response.ok()
-                .entity(trackingUserService.getEmail(id))
+                .entity(trackingUserService.getUser(email))
                 .build();
     }
 
     @GET
-    @Path("/email/{email}")
-    @Operation(summary = "Get mongo user data by email")
+    @Path("/position-get-by-email/{email}")
+    @Operation(summary = "Get mongo user position by email")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
-    public Response findByEmail(@PathParam("email") String email) {
-        log.info("Find mongo user by email");
+    public Response getTrackingUserPosition(@PathParam("email") String email) {
+        log.info("Find position mongo user by email");
         return Response.ok()
-                .entity(trackingUserService.getUser(email))
+                .entity(trackingUserService.getPosition(email))
+                .build();
+    }
+
+    @PATCH
+    @Path("/position-update-by-email/{email}")
+    @Operation(summary = "Update mongo user position by email")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
+            @APIResponse(responseCode = "401", description = "Unauthorized")})
+    public Response updateTrackingUserPosition(@PathParam("email") String email,
+            @QueryParam("longitude") double lon, @QueryParam("latitude") double lat) {
+        log.info("Update position mongo user by email");
+        return Response.ok()
+                .entity(trackingUserService.updatePosition(email, lon, lat))
                 .build();
     }
 }
