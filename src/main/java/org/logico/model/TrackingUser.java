@@ -22,7 +22,7 @@ public class TrackingUser extends PanacheMongoEntity {
     private String address;
 
     @BsonProperty("user_email")
-    private String userEmail;
+    private String email;
 
     @BsonProperty("location")
     private Point location;
