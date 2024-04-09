@@ -9,10 +9,6 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.logico.model.TrackingUser;
 
-//Create operation use in resource.TrackingUser @POST @Path("/create")
-
-//Read operation in resource.TrackingUser @GET @Path("/users")
-
 @ApplicationScoped
 public class TrackingUserRepository implements PanacheMongoRepository<TrackingUser> {
 
@@ -20,26 +16,17 @@ public class TrackingUserRepository implements PanacheMongoRepository<TrackingUs
         return mongoCollection().deleteOne(Filters.eq("user_email", email));
     }
 
-    public UpdateResult updateEmailById(ObjectId objectId, String email) {
-        return mongoCollection().updateOne(new Document("_id", objectId),
+    public UpdateResult updateEmailById(ObjectId id, String email) {
+        return mongoCollection().updateOne(new Document("_id", id),
                 new Document("$set", new Document("user_email", email)));
     }
 
     // Features methods
 
-    public UpdateResult updateSwitch(String email, boolean bool) {
+    public UpdateResult updateSwitchByEmail(String email, boolean bool) {
         return mongoCollection().updateOne(new Document("user_email", email),
                 new Document("$set", new Document("switch_tracking", bool)));
     }
 
-    public String updateUserCoordinates(double[] coordinates) {return null;}
-
-    // Other methods
-    public String getUserEmailById(ObjectId objectId) {
-        return findById(objectId).getUserEmail();
-    }
-
-    public TrackingUser findByEmail(String email) {
-        return find("user_email", email).singleResult();
-    }
+    public UpdateResult updateUserCoordinates(double[] coordinates) {return null;}
 }

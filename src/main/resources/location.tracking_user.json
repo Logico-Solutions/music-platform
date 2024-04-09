@@ -1,0 +1,112 @@
+[{
+  "_id": {
+    "$oid": "65faaf2542dc1d73bbdb7c3c"
+  },
+  "user_email": "example1@ex.com",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.493819865755853,
+      50.44235217141832
+    ]
+  },
+  "address": "Вокзальна Площа, 2, Kyiv, Ukraine, 01032",
+  "switch_tracking": true
+},
+{
+  "_id": {
+    "$oid": "65fc8be71a6b67574bec840d"
+  },
+  "user_email": "example2@ex.com",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.493819865755853,
+      50.44235217141832
+    ]
+  },
+  "address": "Вулиця Симона Петлюри, 32, Kyiv, Ukraine, 01032",
+  "switch_tracking": true
+},
+{
+  "_id": {
+    "$oid": "660546e27a3c8217345c899e"
+  },
+  "user_email": "example3@ex.com",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -3.1790488400466757,
+      55.97536862871391
+    ]
+  },
+  "address": "5 Ferry Road, Edinburgh, EH6 4AD, United Kingdom",
+  "switch_tracking": true
+},
+{
+  "_id": {
+    "$oid": "660546ee7a3c8217345c899f"
+  },
+  "user_email": "example4@ex.com",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.525194464168635,
+      50.413375758035045
+    ]
+  },
+  "address": "Велика Васильківська Вулиця, 138, Kyiv, Ukraine, 03150",
+  "switch_tracking": true
+},
+{
+  "_id": {
+    "$oid": "660546fa7a3c8217345c89a0"
+  },
+  "user_email": "example5@ex.com",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.488955125156792,
+      50.43612307634959
+    ]
+  },
+  "address": "Січеславська Вулиця, Kyiv, Ukraine, 03035",
+  "switch_tracking": true
+},
+{
+  "_id": {
+    "$oid": "660547df7a3c8217345c89a1"
+  },
+  "user_email": "delete@ex.com",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      21.02515691380924,
+      52.21929407584915
+    ]
+  },
+  "address": "Plac Na Rozdrożu 7, 00-580 Warszawa, Masovian Voivodeship, Polan",
+  "switch_tracking": true
+},
+{
+  "_id": {
+    "$oid": "66054ba37a3c8217345c89a2"
+  },
+  "address": "5 Ferry Road, Edinburgh, EH6 4AD, United Kingdom",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -3.1790488400466757,
+      55.97536862871391
+    ]
+  },
+  "switch_tracking": true,
+  "user_email": "update9@ex.com"
+},
+{
+  "_id": {
+    "$oid": "66056de7a89df21249f7e187"
+  },
+  "switch_tracking": false,
+  "user_email": "create@ex.com"
+}]

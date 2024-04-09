@@ -27,10 +27,6 @@ app:
     refresh:
       ttl: PT30M
       secret: ${JWT_REFRESH_SECRET:secret}
-    # MongoDB connection
-    mongodb:
-      connection-string: mongodb://localhost:27017
-      database: location
 mp:
   jwt:
     verify:
