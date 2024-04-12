@@ -164,16 +164,18 @@ public class TrackingUserResource {
                 .build();
     }
 
-    @GET
-    @Path("mapbox-api-get-data-by-position/{email}")
-    @Operation(summary = "Get geo data by mogno user position")
+    @PATCH
+    @Path("mapbox-api-update-address-by-position/{email}")
+    @Operation(summary = "Update address by mongo user position")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON)}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
-    public Response getGeoData(@PathParam("email") String email) {
+    public Response getGeoData(@PathParam("email") String email,
+            @QueryParam("longitude") double lon, @QueryParam("latitude") double lat) {
+        log.info("Mapbox API update address by position");
         return Response.ok()
-                .entity(mapboxService.getGeoData(email))
+                .entity(mapboxService.getGeoData(email, lon, lat))
                 .build();
     }
 }

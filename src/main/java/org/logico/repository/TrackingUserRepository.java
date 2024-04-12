@@ -44,4 +44,9 @@ public class TrackingUserRepository implements PanacheMongoRepository<TrackingUs
                 .find(new Document("user_email", email))
                 .first()).getLocation();
     }
+
+    public UpdateResult updateUserAddressByEmail(String email, String address) {
+        return mongoCollection().updateOne(new Document("user_email", email),
+                new Document("$set", new Document("address", address)));
+    }
 }

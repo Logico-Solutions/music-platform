@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.jbosslog.JBossLog;
 import org.logico.dto.TrackingUserDto;
-import org.logico.dto.request.MapboxRequestDto;
 import org.logico.dto.response.MapboxResponseDto;
 import org.logico.integration.client.MapboxClient;
+import org.logico.mapper.MapboxMapper;
 import org.logico.service.TrackingUserService;
 
 @Builder
@@ -20,15 +20,15 @@ public class MapboxService {
 
     private final TrackingUserService trackingUserService;
     private final MapboxClient mapboxClient;
+    private final MapboxMapper mapboxMapper;
 
-    public MapboxResponseDto getGeoData(String email) {
+    public TrackingUserDto getGeoData(String email, double lon, double lat) {
+        trackingUserService.updatePosition(email, lon, lat);
 
-        TrackingUserDto user = trackingUserService.getUser(email);
-        double lat = user.getLocation().getCoordinates().getValues().get(0);
-        double lon = user.getLocation().getCoordinates().getValues().get(1);
+        MapboxResponseDto response = mapboxClient.getGeoData(ACCESS_TOKEN, lon, lat);
+        String address = response.getFeatures().get(0).getProperties().getFull_address();
 
-        MapboxRequestDto request = new MapboxRequestDto(lat, lon);
-
-        return mapboxClient.getGeoData(ACCESS_TOKEN, request);
+        return trackingUserService.updateAddress(email, address);
     }
+
 }

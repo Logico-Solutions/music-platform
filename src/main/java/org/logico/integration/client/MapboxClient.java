@@ -8,7 +8,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.logico.dto.request.MapboxRequestDto;
 import org.logico.dto.response.MapboxResponseDto;
 
 @Default
@@ -16,8 +15,8 @@ import org.logico.dto.response.MapboxResponseDto;
 public interface MapboxClient {
 
     @GET
-    @Path("mapbox-api/search/geocode/v6/reverse/")
+    @Path("/search/geocode/v6/reverse")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    MapboxResponseDto getGeoData(@QueryParam("access_token") String accessToken, MapboxRequestDto mapboxRequestDto);
+    MapboxResponseDto getGeoData(@QueryParam("access_token") String accessToken, @QueryParam("longitude") Double lon, @QueryParam("latitude") Double lat);
 }

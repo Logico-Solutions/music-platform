@@ -91,4 +91,13 @@ public class TrackingUserService {
         }
         return trackingUserMapper.toDto(trackingUserRepository.findUserByEmail(email));
     }
+
+    public TrackingUserDto updateAddress(String email, String address) {
+        log.debug("Updating tracking_user address from mongodb by email");
+        UpdateResult upRes = trackingUserRepository.updateUserAddressByEmail(email, address);
+        if (upRes.getMatchedCount() == 0) {
+            throw new MongoException("User with email " + email + " NOT FOUND");
+        }
+        return trackingUserMapper.toDto(trackingUserRepository.findUserByEmail(email));
+    }
 }

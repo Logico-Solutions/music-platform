@@ -292,6 +292,12 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>${mongodb.driver.sync.version}</version>
         </dependency>
+        <!--Mapbox API-->
+<!--        <dependency>-->
+<!--            <groupId>com.mapbox.mapboxsdk</groupId>-->
+<!--            <artifactId>mapbox-sdk-services</artifactId>-->
+<!--            <version>6.15.0</version>-->
+<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>

@@ -11,6 +11,8 @@ import lombok.Data;
 public class MapboxRequestDto {
 
     @JsonProperty
+    private String accessToken;
+    @JsonProperty
     private Double lat;
     @JsonProperty
     private Double lon;
