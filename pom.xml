@@ -36,6 +36,7 @@
         <jandex-maven-plugin.version>1.2.2</jandex-maven-plugin.version>
         <mockito-core.version>5.6.0</mockito-core.version>
         <jacoco.maven.plugin>0.8.11</jacoco.maven.plugin>
+        <mongodb.driver.sync.version>4.11.1</mongodb.driver.sync.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -278,6 +279,25 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-liquibase</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-mongodb-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-mongodb-panache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.driver.sync.version}</version>
+        </dependency>
+        <!--Mapbox API-->
+<!--        <dependency>-->
+<!--            <groupId>com.mapbox.mapboxsdk</groupId>-->
+<!--            <artifactId>mapbox-sdk-services</artifactId>-->
+<!--            <version>6.15.0</version>-->
+<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>
