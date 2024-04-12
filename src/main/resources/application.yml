@@ -25,10 +25,6 @@ quarkus:
   mongodb:
     connection-string: mongodb://localhost:27017
     database: location
-  mapbox:
-    api:
-      base-url: ${WEBSITE_API_URL:https://api.mapbox.com}
-      access-token: ${WEBSITE_ACCESS_TOKEN:pk.eyJ1IjoidGFzdWtlIiwiYSI6ImNsdWxqOTh3eDB3eTgyaXBocHp3YnA3bmUifQ.PhWY5fRNXYX2L2KFn7C6vq}
 app:
   password:
     secret: ${PASSWORD_SECRET}

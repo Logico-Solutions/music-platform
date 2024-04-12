@@ -1,6 +1,5 @@
 package org.logico.dto;
 
-import com.mongodb.client.model.geojson.Position;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +15,6 @@ public class TrackingUserDto {
     private ObjectId id;
     private String address;
     private String email;
-    private Position location;
+    private PointDto location;
     private boolean switchTracking;
 }

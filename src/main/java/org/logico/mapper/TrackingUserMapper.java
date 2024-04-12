@@ -12,12 +12,12 @@ import java.util.List;
 @Mapper(componentModel = "jakarta")
 public interface TrackingUserMapper {
 
-    @Mapping(source = "location.coordinates", target = "location")
+    @Mapping(source = "location.coordinates", target = "location.coordinates")
     TrackingUserDto toDto(TrackingUser trackingUser);
 
-    @Mapping(source = "location.coordinates", target = "location")
+    @Mapping(source = "location.coordinates", target = "location.coordinates")
     List<TrackingUserDto> toListDto(List<TrackingUser> trackingUser);
 
-    @Mapping(source = "position", target = "position")
+    @Mapping(source = "position", target = "coordinates")
     PointDto toPointDto(Point point);
 }

@@ -1,6 +1,5 @@
-package org.logico.dto;
+package org.logico.dto.response;
 
-import com.mongodb.client.model.geojson.Position;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PointDto {
-    private Position coordinates;
+public class MapboxResponseDto {
+
+    private String type;
+
 }

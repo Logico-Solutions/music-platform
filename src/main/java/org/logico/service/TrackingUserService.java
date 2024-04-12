@@ -83,12 +83,12 @@ public class TrackingUserService {
         return trackingUserMapper.toPointDto(point);
     }
 
-    public TrackingUser updatePosition(String email, double lon, double lat) {
+    public TrackingUserDto updatePosition(String email, double lon, double lat) {
         log.debug("Updating tracking_user position from mongodb by email");
-        TrackingUser up = trackingUserRepository.findUserByEmail(email);
-        if (up == null)
+        UpdateResult upRes = trackingUserRepository.updateUserCoordinates(email, new Position(lon, lat));
+        if (upRes.getMatchedCount() == 0) {
             throw new MongoException("User with email " + email + " NOT FOUND");
-        trackingUserRepository.updateUserCoordinates(email, new Position(lon, lat));
-        return up;
+        }
+        return trackingUserMapper.toDto(trackingUserRepository.findUserByEmail(email));
     }
 }

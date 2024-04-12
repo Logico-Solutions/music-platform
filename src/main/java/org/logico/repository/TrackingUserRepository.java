@@ -32,7 +32,7 @@ public class TrackingUserRepository implements PanacheMongoRepository<TrackingUs
 
     public UpdateResult updateUserCoordinates(String email, Position position) {
         return mongoCollection().updateOne(new Document("user_email", email),
-                new Document("$set", new Document("location.coordinates", position)));
+                new Document("$set", new Document("location", new Point(position))));
     }
 
     public DeleteResult deleteByEmail(String email) {

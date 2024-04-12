@@ -21,6 +21,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.logico.dto.TrackingUserDto;
+import org.logico.integration.MapboxService;
 import org.logico.model.TrackingUser;
 import org.logico.service.TrackingUserService;
 import org.logico.util.Constants;
@@ -34,6 +35,7 @@ import org.logico.util.Constants;
 public class TrackingUserResource {
 
     private final TrackingUserService trackingUserService;
+    private final MapboxService mapboxService;
 
     @POST
     @Path("/create-user")
@@ -138,7 +140,7 @@ public class TrackingUserResource {
     @Operation(summary = "Get mongo user position by email")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
     public Response getTrackingUserPosition(@PathParam("email") String email) {
         log.info("Find position mongo user by email");
@@ -152,13 +154,26 @@ public class TrackingUserResource {
     @Operation(summary = "Update mongo user position by email")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
-                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
+                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TrackingUserDto.class))}),
             @APIResponse(responseCode = "401", description = "Unauthorized")})
     public Response updateTrackingUserPosition(@PathParam("email") String email,
             @QueryParam("longitude") double lon, @QueryParam("latitude") double lat) {
         log.info("Update position mongo user by email");
         return Response.ok()
                 .entity(trackingUserService.updatePosition(email, lon, lat))
+                .build();
+    }
+
+    @GET
+    @Path("mapbox-api-get-data-by-position/{email}")
+    @Operation(summary = "Get geo data by mogno user position")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = Constants.SUCCESSFULLY_RETRIEVED, content = {
+                    @Content(mediaType = MediaType.APPLICATION_JSON)}),
+            @APIResponse(responseCode = "401", description = "Unauthorized")})
+    public Response getGeoData(@PathParam("email") String email) {
+        return Response.ok()
+                .entity(mapboxService.getGeoData(email))
                 .build();
     }
 }

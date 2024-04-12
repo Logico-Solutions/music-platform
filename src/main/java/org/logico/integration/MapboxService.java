@@ -1,23 +1,34 @@
 package org.logico.integration;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.core.Response;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.jbosslog.JBossLog;
-import org.eclipse.microprofile.faulttolerance.Retry;
+import org.logico.dto.TrackingUserDto;
+import org.logico.dto.request.MapboxRequestDto;
+import org.logico.dto.response.MapboxResponseDto;
 import org.logico.integration.client.MapboxClient;
 import org.logico.service.TrackingUserService;
 
+@Builder
 @JBossLog
 @ApplicationScoped
-public class MapboxService implements MapboxClient {
+@AllArgsConstructor
+public class MapboxService {
 
-    MapboxClient mapboxClient;
-    TrackingUserService trackingUserService;
+    private final String ACCESS_TOKEN = "pk.eyJ1IjoidGFzdWtlIiwiYSI6ImNsdWxqZHJ2MDB1MHQycWxpbDBwYTh3cm4ifQ.Xq9nfy3UrLgwaR3xNHA0mg";
 
-    @Retry(maxRetries = 1, abortOn = {NotFoundException.class})
-    public Response getGeoData(double longitude, double latitude, String accessToken) {
-        log.info("Trying to get geo data from mapbox api");
-        return null;
+    private final TrackingUserService trackingUserService;
+    private final MapboxClient mapboxClient;
+
+    public MapboxResponseDto getGeoData(String email) {
+
+        TrackingUserDto user = trackingUserService.getUser(email);
+        double lat = user.getLocation().getCoordinates().getValues().get(0);
+        double lon = user.getLocation().getCoordinates().getValues().get(1);
+
+        MapboxRequestDto request = new MapboxRequestDto(lat, lon);
+
+        return mapboxClient.getGeoData(ACCESS_TOKEN, request);
     }
 }
